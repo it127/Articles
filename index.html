@@ -1,0 +1,2468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>NexusBlog - Modern Article Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0f0d;
+            --bg-secondary: #1a1f1d;
+            --bg-card: #1a1f1d;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --accent: #c4ff4d;
+            --accent-hover: #b0e044;
+            --border-color: #2a2f2d;
+            --highlight-color: #c4ff4d;
+            --code-bg: #282c34;
+            --scrollbar-bg: #1a1f1d;
+            --scrollbar-thumb: #3a3f3d;
+            --scrollbar-thumb-hover: #c4ff4d;
+            --gradient-start: #0a0f0d;
+            --gradient-end: #1a1f1d;
+            --overlay: rgba(10, 15, 13, 0.8);
+            --card-hover: #222725;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: var(--text-secondary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar - improved for mobile */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-bg);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+        }
+
+        /* Typography - responsive font sizes */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+        }
+
+        h4 {
+            font-size: clamp(1.25rem, 3vw, 1.5rem);
+        }
+
+        h5 {
+            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+        }
+
+        h6 {
+            font-size: clamp(1rem, 2vw, 1rem);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Navigation - improved for mobile */
+        .navbar {
+            background-color: var(--bg-secondary) !important;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            height: auto;
+            width: 100%;
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        .navbar-brand {
+            color: var(--accent) !important;
+            font-weight: bold;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            padding: 8px 15px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .navbar-toggler {
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        /* Hero Section - improved for mobile */
+        .hero-section {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            padding: 120px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+
+        .hero-cta {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .hero-cta:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(196, 255, 77, 0.2);
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            margin-top: 20px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Featured Articles Section - API Generated */
+        #featured {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            position: relative;
+        }
+
+        #featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .featured-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .featured-article-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .featured-article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .featured-article-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .featured-article-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(196, 255, 77, 0.2);
+            border-color: var(--accent);
+        }
+
+        .featured-article-img {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .featured-article-card:hover .featured-article-img {
+            transform: scale(1.1);
+        }
+
+        .featured-article-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-category-tag {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: var(--bg-primary);
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(196, 255, 77, 0.3);
+        }
+
+        .featured-article-title {
+            font-size: clamp(1.3rem, 3vw, 1.6rem);
+            margin-bottom: 15px;
+            line-height: 1.3;
+            color: var(--text-primary);
+            font-weight: 700;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .featured-article-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            flex-grow: 1;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            line-height: 1.6;
+            display: -webkit-box;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .featured-article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: #888;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .featured-article-meta i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        /* Latest Articles Section - API Generated */
+        #latest {
+            padding: 80px 0;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .latest-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .latest-article-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .latest-article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(196, 255, 77, 0.15);
+            border-color: var(--accent);
+        }
+
+        .latest-article-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .latest-article-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .latest-article-card:hover .latest-article-img {
+            transform: scale(1.08);
+        }
+
+        .latest-article-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(10, 15, 13, 0.9) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .latest-article-card:hover .latest-article-overlay {
+            opacity: 1;
+        }
+
+        .read-latest-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: var(--bg-primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(196, 255, 77, 0.3);
+        }
+
+        .read-latest-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 255, 77, 0.4);
+        }
+
+        .latest-article-content {
+            padding: 20px;
+        }
+
+        .latest-article-date {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: var(--bg-primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 2;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .latest-article-category {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .latest-article-category i {
+            margin-right: 8px;
+        }
+
+        .latest-article-title {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .latest-article-excerpt {
+            color: var(--text-secondary);
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            margin-bottom: 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Trending Topics Section - API Generated */
+        #trending {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            position: relative;
+        }
+
+        .trending-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .trending-article-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            height: 280px;
+        }
+
+        .trending-article-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(196, 255, 77, 0.2);
+        }
+
+        .trending-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.4);
+            display: flex;
+            align-items: center;
+        }
+
+        .trending-badge i {
+            margin-right: 5px;
+            animation: fire 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fire {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .trending-article-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .trending-article-card:hover .trending-article-img {
+            transform: scale(1.1);
+        }
+
+        .trending-article-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(10, 15, 13, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 25px;
+        }
+
+        .trending-article-category {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .trending-article-category i {
+            margin-right: 8px;
+        }
+
+        .trending-article-title {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 15px;
+            line-height: 1.3;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .trending-article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .trending-article-meta i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        /* Categories Section - API Generated */
+        #categories {
+            padding: 80px 0;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(196, 255, 77, 0.2);
+            border-color: var(--accent);
+        }
+
+        .category-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-card:hover .category-bg {
+            opacity: 0.5;
+        }
+
+        .category-content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .category-name {
+            font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .category-count {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .category-count span {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(196, 255, 77, 0.3);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(196, 255, 77, 0.4);
+        }
+
+        .scroll-to-top i {
+            font-size: 1.2rem;
+        }
+
+        /* Original App Styles - improved for mobile */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            margin-top: 70px;
+        }
+
+        .header {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .header h1 {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(196, 255, 77, 0.3);
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .status-bar {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background-color: #f44336;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+
+        .next-update {
+            color: #9e9e9e;
+            font-size: 0.9rem;
+        }
+
+        .article-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .article-card-original {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .article-card-original:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .article-header {
+            padding: 15px;
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            position: relative;
+        }
+
+        .article-title {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: bold;
+            margin-bottom: 5px;
+            padding-right: 30px;
+        }
+
+        .article-meta-original {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .article-content-original {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 250px;
+            scroll-behavior: smooth;
+        }
+
+        .article-content-original::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .article-content-original::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.3);
+            border-radius: 3px;
+        }
+
+        .article-content-original::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .article-content-original::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+
+        .article-footer {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent);
+        }
+
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--accent);
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9e9e9e;
+        }
+
+        .empty-state i {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 20px;
+            color: var(--border-color);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-custom:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: none;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: calc(100% - 40px);
+        }
+
+        .offline-indicator.show {
+            display: flex;
+        }
+
+        .offline-indicator i {
+            margin-right: 10px;
+        }
+
+        /* Full Screen Modal - improved for mobile and Android */
+        .fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+        }
+
+        .fullscreen-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-content {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 60px 30px 30px;
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            border: none;
+            color: var(--bg-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(196, 255, 77, 0.3);
+        }
+
+        .close-fullscreen:hover {
+            transform: rotate(90deg);
+            background-color: var(--accent-hover);
+        }
+
+        .fullscreen-article-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            text-align: left;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .article-highlight {
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(196, 255, 77, 0.5);
+            animation: highlightPulse 2s ease-in-out;
+        }
+
+        @keyframes highlightPulse {
+            0% { box-shadow: 0 0 20px rgba(196, 255, 77, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(196, 255, 77, 0.8); }
+            100% { box-shadow: 0 0 20px rgba(196, 255, 77, 0.5); }
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 992px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .article-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .featured-articles-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 100px 0 40px;
+            }
+            
+            #featured, #latest, #trending, #categories {
+                padding: 60px 0;
+            }
+            
+            .featured-articles-grid,
+            .latest-articles-grid,
+            .trending-articles-grid,
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .article-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-custom {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .fullscreen-content {
+                width: 95%;
+                padding: 50px 20px 20px;
+                margin: 10px auto;
+            }
+            
+            .close-fullscreen {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .scroll-to-top {
+                width: 45px;
+                height: 45px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 8px 0;
+            }
+            
+            .hero-section {
+                padding: 80px 0 30px;
+            }
+            
+            .container {
+                padding: 5px;
+                margin-top: 60px;
+            }
+            
+            .notification {
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .offline-indicator {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+            
+            .article-meta-original {
+                font-size: 0.75rem;
+            }
+            
+            .article-content-original {
+                padding: 15px;
+                max-height: 200px;
+            }
+            
+            .fullscreen-content {
+                width: 98%;
+                padding: 40px 15px 15px;
+                margin: 5px auto;
+            }
+            
+            .close-fullscreen {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .scroll-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-custom, .fullscreen-btn, .close-fullscreen, .read-latest-btn, .scroll-to-top {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .article-card-original, .latest-article-card, .featured-article-card, .trending-article-card, .category-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">NexusBlog</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#featured">Featured</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#latest">Latest</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#trending">Trending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">FEATURED ARTICLES</h1>
+                        <p class="hero-subtitle">Discover the latest insights, trends, and stories from our expert writers</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Featured Article" class="img-fluid rounded-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Articles Section - API Generated -->
+    <section id="featured" class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Articles</h2>
+                <p class="section-subtitle">Handpicked stories that deserve your attention</p>
+            </div>
+            <div class="featured-articles-grid" id="featuredArticlesGrid">
+                <!-- Featured articles will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Articles Section - API Generated -->
+    <section id="latest" class="latest-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Latest Articles</h2>
+                <p class="section-subtitle">Fresh content delivered straight to you</p>
+            </div>
+            <div class="latest-articles-grid" id="latestArticlesGrid">
+                <!-- Latest articles will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Topics Section - API Generated -->
+    <section id="trending" class="trending-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Trending Topics</h2>
+                <p class="section-subtitle">What's hot in the world right now</p>
+            </div>
+            <div class="trending-articles-grid" id="trendingArticlesGrid">
+                <!-- Trending articles will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section - API Generated -->
+    <section id="categories" class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Categories</h2>
+                <p class="section-subtitle">Explore content by topic</p>
+            </div>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Original App Section -->
+    <div class="container">
+        <div class="header">
+            <h1>AI-Powered Article Hub</h1>
+            <p>Automatically generating fresh articles every 1-2 hours</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">System Active</span>
+            </div>
+            <div class="next-update">
+                <i class="far fa-clock me-1"></i>
+                Next update in: <span id="countdown">--:--:--</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="generateBtn" class="btn-custom">
+                <i class="fas fa-sync-alt me-2"></i>Generate 15 Articles
+            </button>
+        </div>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Generating new articles...</p>
+        </div>
+
+        <div id="articlesContainer" class="article-container">
+            <!-- Articles will be added here dynamically -->
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No articles yet</h3>
+            <p>The first articles will be generated shortly</p>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Notifications and Modals -->
+    <div id="notification" class="notification">
+        <div class="notification-title">Notification</div>
+        <div class="notification-message"></div>
+    </div>
+
+    <div id="offlineIndicator" class="offline-indicator">
+        <i class="fas fa-wifi-slash"></i>
+        <span>You are currently offline. Using cached articles.</span>
+    </div>
+
+    <!-- Full Screen Modal -->
+    <div id="fullscreenModal" class="fullscreen-modal">
+        <div class="fullscreen-content">
+            <div id="fullscreenArticleContent" class="fullscreen-article-content">
+                <!-- Article content will be inserted here -->
+            </div>
+        </div>
+        <button class="close-fullscreen" onclick="closeFullscreen()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        // Configuration
+        const API_KEY = "prcess.env.API_KEY";
+        const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        const MODEL = "alibaba/tongyi-deepresearch-30b-a3b:free";
+        
+        // GitHub repository for storing articles
+        const GITHUB_USERNAME = "your-username";
+        const GITHUB_REPO = "nexusblog-articles";
+        const ARTICLES_FILE = "articles.json";
+        const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${ARTICLES_FILE}`;
+        
+        // Article topics - ONLY these topics will be used
+        const articleTopics = {
+            india: [
+                "The Rich Cultural Heritage of India",
+                "India's Technological Advancements in the 21st Century",
+                "The Diversity of Indian Cuisine Across Regions",
+                "India's Space Program: From Aryabhata to Chandrayaan",
+                "The Impact of Bollywood on Global Cinema",
+                "Traditional Indian Medicine: Ayurveda in Modern Times",
+                "The Economic Growth Story of India",
+                "India's Wildlife Conservation Efforts",
+                "The Festival Traditions of India",
+                "India's Education System: Challenges and Opportunities"
+            ],
+            usa: [
+                "The American Dream: Myth or Reality?",
+                "The Tech Revolution in Silicon Valley",
+                "American Cultural Influence Worldwide",
+                "The US Healthcare System: Strengths and Weaknesses",
+                "American National Parks: Preserving Natural Beauty"
+            ],
+            uk: [
+                "The British Monarchy in the Modern Era",
+                "The History of the British Empire",
+                "The UK's Contribution to World Literature",
+                "Brexit and Its Impact on the UK",
+                "The National Health Service: A British Institution"
+            ],
+            japan: [
+                "The Art of Japanese Tea Ceremony",
+                "Japan's Technological Innovation and Robotics",
+                "The Cultural Significance of Anime and Manga",
+                "Japanese Cuisine: More Than Just Sushi",
+                "The History of Samurai and Bushido"
+            ]
+        };
+
+        // Enhanced article content templates for better offline generation
+        const articleTemplates = {
+            "The Rich Cultural Heritage of India": {
+                intro: "India's cultural heritage spans thousands of years, encompassing diverse traditions, languages, and artistic expressions that have shaped one of the world's oldest civilizations.",
+                points: [
+                    "Ancient civilizations like the Indus Valley Civilization dating back to 3300 BCE",
+                    "Classical dance forms such as Bharatanatyam, Kathak, and Odissi",
+                    "Architectural marvels including the Taj Mahal, Khajuraho Temples, and ancient stepwells",
+                    "Traditional festivals like Diwali, Holi, Eid, and Christmas celebrated across regions"
+                ],
+                conclusion: "India's cultural richness continues to influence global arts and traditions while preserving its unique identity through centuries of adaptation and evolution."
+            },
+            "India's Technological Advancements in the 21st Century": {
+                intro: "India has emerged as a global technology hub, with significant advancements in IT, space exploration, and digital infrastructure transforming the nation's economic landscape.",
+                points: [
+                    "The IT revolution establishing India as a global software services leader",
+                    "ISRO's successful Mars Orbiter Mission and Chandrayaan lunar explorations",
+                    "Digital India initiative revolutionizing governance and citizen services",
+                    "UPI payment system becoming a global benchmark for digital transactions"
+                ],
+                conclusion: "India's technological progress positions it as a key player in the global digital transformation, with innovations that address both local challenges and global opportunities."
+            },
+            "The Diversity of Indian Cuisine Across Regions": {
+                intro: "Indian cuisine represents a rich tapestry of flavors, ingredients, and cooking techniques that vary dramatically across the country's diverse regions and cultures.",
+                points: [
+                    "North Indian cuisine featuring rich curries and tandoori preparations",
+                    "South Indian dishes known for their rice-based preparations and coconut flavors",
+                    "Coastal regions specializing in seafood and coconut-based curries",
+                    "Street food culture offering diverse snacks from pani puri to vada pav"
+                ],
+                conclusion: "The incredible diversity of Indian cuisine reflects the country's cultural plurality, with each region contributing unique flavors to the national culinary identity."
+            },
+            "India's Space Program: From Aryabhata to Chandrayaan": {
+                intro: "India's space program has evolved from humble beginnings to become one of the world's most respected and cost-effective space exploration agencies.",
+                points: [
+                    "The launch of Aryabhata, India's first satellite, in 1975",
+                    "Development of the Polar Satellite Launch Vehicle (PSLV) series",
+                    "The successful Mars Orbiter Mission on its first attempt",
+                    "Chandrayaan missions expanding lunar exploration capabilities"
+                ],
+                conclusion: "ISRO's achievements demonstrate how focused scientific vision and efficient resource management can achieve world-class space exploration milestones."
+            },
+            "The American Dream: Myth or Reality?": {
+                intro: "The concept of the American Dream has evolved significantly over centuries, reflecting changing social and economic realities while remaining a powerful cultural ideal.",
+                points: [
+                    "Historical origins in the Declaration of Independence and immigrant experiences",
+                    "Post-World War II economic boom and suburban expansion",
+                    "Contemporary challenges of wealth inequality and social mobility",
+                    "The digital age redefining opportunities and success metrics"
+                ],
+                conclusion: "While the American Dream remains a powerful ideal, its accessibility continues to be debated in contemporary society, reflecting broader discussions about opportunity and equality."
+            },
+            "The British Monarchy in the Modern Era": {
+                intro: "The British monarchy has adapted to changing times while maintaining its ceremonial and constitutional roles in a rapidly evolving democratic society.",
+                points: [
+                    "Constitutional monarchy and political neutrality in governance",
+                    "Modernization efforts under recent monarchs addressing public expectations",
+                    "Media representation and the monarchy's relationship with the press",
+                    "Economic impact through tourism, heritage, and cultural diplomacy"
+                ],
+                conclusion: "The monarchy continues to evolve, balancing centuries of tradition with contemporary expectations in a modern democracy facing new social and political challenges."
+            },
+            "The Art of Japanese Tea Ceremony": {
+                intro: "The Japanese tea ceremony, or Chanoyu, represents a profound cultural practice blending aesthetics, spirituality, and social interaction in carefully choreographed rituals.",
+                points: [
+                    "Historical development influenced by Zen Buddhist philosophy",
+                    "The four principles of harmony, respect, purity, and tranquility",
+                    "Traditional utensils and their symbolic meanings in the ceremony",
+                    "Seasonal variations and contemporary adaptations of the practice"
+                ],
+                conclusion: "The tea ceremony remains a living tradition that embodies Japanese cultural values and aesthetic sensibilities, offering moments of contemplation in modern life."
+            }
+        };
+
+        // State management
+        let articles = [];
+        let countdownInterval;
+        let articleGenerationInterval;
+        let isGenerating = false;
+        let isOfflineMode = true; // Default to offline mode
+        let selectedCountries = Object.keys(articleTopics);
+        let usedTopics = {};
+
+        // DOM elements
+        const articlesContainer = document.getElementById('articlesContainer');
+        const featuredArticlesGrid = document.getElementById('featuredArticlesGrid');
+        const latestArticlesGrid = document.getElementById('latestArticlesGrid');
+        const trendingArticlesGrid = document.getElementById('trendingArticlesGrid');
+        const categoriesGrid = document.getElementById('categoriesGrid');
+        const emptyState = document.getElementById('emptyState');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const countdownElement = document.getElementById('countdown');
+        const generateBtn = document.getElementById('generateBtn');
+        const notification = document.getElementById('notification');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const offlineIndicator = document.getElementById('offlineIndicator');
+        const fullscreenModal = document.getElementById('fullscreenModal');
+        const fullscreenArticleContent = document.getElementById('fullscreenArticleContent');
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        // Initialize the app
+        function init() {
+            loadArticlesFromGitHub();
+            renderArticles();
+            renderSectionArticles();
+            startCountdown();
+            scheduleNextArticleGeneration();
+            checkOnlineStatus();
+            
+            // Check for shared article in URL
+            checkForSharedArticle();
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generateArticles);
+            
+            // Listen for online/offline events
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            
+            // Scroll to top button functionality
+            window.addEventListener('scroll', handleScroll);
+            scrollToTopBtn.addEventListener('click', scrollToTop);
+            
+            // Initialize highlight.js for code syntax highlighting
+            hljs.highlightAll();
+            
+            // Add touch event handling for mobile
+            addTouchHandling();
+        }
+
+        // Load articles from GitHub
+        async function loadArticlesFromGitHub() {
+            try {
+                // Try to fetch articles from GitHub
+                const response = await fetch(GITHUB_API_URL);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = atob(data.content);
+                    articles = JSON.parse(content);
+                    
+                    // Store in localStorage as backup
+                    localStorage.setItem('autoGeneratedArticles', content);
+                } else {
+                    // If GitHub fetch fails, try localStorage
+                    const storedArticles = localStorage.getItem('autoGeneratedArticles');
+                    if (storedArticles) {
+                        articles = JSON.parse(storedArticles);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading articles from GitHub:', error);
+                
+                // Fallback to localStorage
+                const storedArticles = localStorage.getItem('autoGeneratedArticles');
+                if (storedArticles) {
+                    articles = JSON.parse(storedArticles);
+                }
+            }
+            
+            // Load used topics
+            const storedUsedTopics = localStorage.getItem('usedTopics');
+            if (storedUsedTopics) {
+                usedTopics = JSON.parse(storedUsedTopics);
+            }
+        }
+
+        // Save articles to GitHub
+        async function saveArticlesToGitHub() {
+            try {
+                // First, get the current file to get the SHA
+                const getResponse = await fetch(GITHUB_API_URL);
+                let sha = '';
+                
+                if (getResponse.ok) {
+                    const data = await getResponse.json();
+                    sha = data.sha;
+                }
+                
+                // Prepare the content
+                const content = btoa(JSON.stringify(articles, null, 2));
+                
+                // Create or update the file
+                const putResponse = await fetch(GITHUB_API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token YOUR_GITHUB_TOKEN`, // Replace with your token
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Update articles - ${new Date().toISOString()}`,
+                        content: content,
+                        sha: sha
+                    })
+                });
+                
+                if (putResponse.ok) {
+                    console.log('Articles saved to GitHub successfully');
+                } else {
+                    console.error('Failed to save articles to GitHub');
+                }
+            } catch (error) {
+                console.error('Error saving articles to GitHub:', error);
+            }
+            
+            // Always save to localStorage as backup
+            localStorage.setItem('autoGeneratedArticles', JSON.stringify(articles));
+            localStorage.setItem('usedTopics', JSON.stringify(usedTopics));
+        }
+
+        // Handle scroll events for scroll-to-top button
+        function handleScroll() {
+            if (window.pageYOffset > 800) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        }
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add touch event handling for mobile devices
+        function addTouchHandling() {
+            // Handle touch events for article cards
+            const articleCards = document.querySelectorAll('.article-card-original, .latest-article-card, .featured-article-card, .trending-article-card, .category-card');
+            
+            articleCards.forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Handle swipe gestures for fullscreen modal
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            fullscreenModal.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            fullscreenModal.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    // Swipe left - could implement next article
+                }
+                if (touchEndX > touchStartX + 50) {
+                    // Swipe right - could implement previous article
+                }
+            }
+        }
+
+        // Check for shared article in URL
+        function checkForSharedArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('article');
+            
+            if (articleId) {
+                const article = articles.find(a => a.id == articleId);
+                if (article) {
+                    setTimeout(() => {
+                        openFullscreen(article);
+                        // Highlight the article card
+                        const articleCard = document.querySelector(`[data-article-id="${articleId}"]`);
+                        if (articleCard) {
+                            articleCard.classList.add('article-highlight');
+                            articleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        // Check online status
+        function checkOnlineStatus() {
+            updateOnlineStatus();
+        }
+
+        // Update online status UI
+        function updateOnlineStatus() {
+            if (navigator.onLine && !isOfflineMode) {
+                statusDot.classList.remove('offline');
+                statusText.textContent = 'System Active';
+                offlineIndicator.classList.remove('hide');
+            } else {
+                statusDot.classList.add('offline');
+                statusText.textContent = 'Offline Mode';
+                offlineIndicator.classList.add('hide');
+            }
+        }
+
+        // Get a random topic that hasn't been used recently
+        function getRandomTopic() {
+            // If all topics have been used, reset the tracking
+            let allTopicsUsed = true;
+            for (const country of selectedCountries) {
+                if (!usedTopics[country] || usedTopics[country].length < articleTopics[country].length) {
+                    allTopicsUsed = false;
+                    break;
+                }
+            }
+            
+            if (allTopicsUsed) {
+                usedTopics = {};
+            }
+            
+            // Initialize used topics for each country if needed
+            for (const country of selectedCountries) {
+                if (!usedTopics[country]) {
+                    usedTopics[country] = [];
+                }
+            }
+            
+            // Get available topics with higher probability for India
+            let availableTopics = [];
+            for (const country of selectedCountries) {
+                const countryTopics = articleTopics[country];
+                const usedCountryTopics = usedTopics[country];
+                
+                for (const topic of countryTopics) {
+                    if (!usedCountryTopics.includes(topic)) {
+                        // Add India topics multiple times for higher probability
+                        const multiplier = country === 'india' ? 3 : 1;
+                        for (let i = 0; i < multiplier; i++) {
+                            availableTopics.push(topic);
+                        }
+                    }
+                }
+            }
+            
+            // If no available topics (shouldn't happen with the reset above), use all topics
+            if (availableTopics.length === 0) {
+                for (const country of selectedCountries) {
+                    const multiplier = country === 'india' ? 3 : 1;
+                    for (let i = 0; i < multiplier; i++) {
+                        availableTopics = availableTopics.concat(articleTopics[country]);
+                    }
+                }
+            }
+            
+            // Select a random topic
+            const topic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+            
+            // Mark this topic as used
+            for (const country of selectedCountries) {
+                if (articleTopics[country].includes(topic)) {
+                    usedTopics[country].push(topic);
+                    break;
+                }
+            }
+            
+            return topic;
+        }
+
+        // Generate 15 articles at once
+        async function generateArticles() {
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            generateBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+            
+            try {
+                const newArticles = [];
+                const articlesToGenerate = 15;
+                
+                for (let i = 0; i < articlesToGenerate; i++) {
+                    const topic = getRandomTopic();
+                    
+                    // Check if we're online or in offline mode
+                    if (navigator.onLine && !isOfflineMode) {
+                        try {
+                            // Online mode - use API with enhanced text formatting prompt
+                            const response = await fetch(API_URL, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${API_KEY}`
+                                },
+                                body: JSON.stringify({
+                                    model: MODEL,
+                                    messages: [
+                                        {
+                                            role: "system",
+                                            content: "You are a professional article writer. Write informative, engaging articles with rich text formatting. Use markdown for formatting: **bold text**, *italic text*, headers (# ## ###), bullet points (* item), numbered lists (1. item), blockquotes (> quote), and tables. Include a catchy title and well-structured content with at least 5-6 paragraphs."
+                                        },
+                                        {
+                                            role: "user",
+                                            content: `Write a comprehensive article about "${topic}" with rich text formatting. Include:\n1. A compelling title\n2. An engaging introduction\n3. Multiple well-structured sections with headers\n4. Bold and italic text for emphasis\n5. Bullet points and numbered lists where appropriate\n6. A blockquote with an expert opinion\n7. A strong conclusion\n\nMake it informative, engaging, and well-formatted.`
+                                        }
+                                    ],
+                                    temperature: 0.7,
+                                    max_tokens: 0,
+                                })
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                const content = data.choices[0].message.content;
+                                
+                                // Create article object
+                                const now = new Date();
+                                const article = {
+                                    id: Date.now() + i,
+                                    title: extractTitle(content),
+                                    content: content,
+                                    date: now.toLocaleDateString(),
+                                    time: now.toLocaleTimeString(),
+                                    isOffline: false,
+                                    category: getCategoryFromTopic(topic),
+                                    excerpt: generateExcerpt(content),
+                                    formattedContent: formatMarkdown(content)
+                                };
+                                
+                                newArticles.push(article);
+                            } else {
+                                // If API fails, generate enhanced offline article
+                                const article = generateEnhancedOfflineArticle(topic);
+                                article.id = Date.now() + i;
+                                article.category = getCategoryFromTopic(topic);
+                                article.excerpt = generateExcerpt(article.content);
+                                article.formattedContent = formatMarkdown(article.content);
+                                newArticles.push(article);
+                            }
+                        } catch (error) {
+                            console.error('API Error:', error);
+                            // If API fails, generate enhanced offline article
+                            const article = generateEnhancedOfflineArticle(topic);
+                            article.id = Date.now() + i;
+                            article.category = getCategoryFromTopic(topic);
+                            article.excerpt = generateExcerpt(article.content);
+                            article.formattedContent = formatMarkdown(article.content);
+                            newArticles.push(article);
+                        }
+                    } else {
+                        // Offline mode - generate an enhanced mock article
+                        const article = generateEnhancedOfflineArticle(topic);
+                        article.id = Date.now() + i;
+                        article.category = getCategoryFromTopic(topic);
+                        article.excerpt = generateExcerpt(article.content);
+                        article.formattedContent = formatMarkdown(article.content);
+                        newArticles.push(article);
+                    }
+                    
+                    // Add a small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Add all new articles to the beginning of the array
+                articles.unshift(...newArticles);
+                
+                // Save to storage and render
+                saveArticlesToGitHub();
+                renderArticles();
+                renderSectionArticles();
+                
+                // Show notification
+                showNotification('Articles Generated', `${newArticles.length} new articles have been added to your collection.`);
+                
+                // Reset countdown
+                startCountdown();
+                
+            } catch (error) {
+                console.error('Error generating articles:', error);
+                showNotification('Error', 'Failed to generate articles. Please try again later.');
+            } finally {
+                isGenerating = false;
+                generateBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Get category from topic
+        function getCategoryFromTopic(topic) {
+            if (articleTopics.india.includes(topic)) return 'India';
+            if (articleTopics.usa.includes(topic)) return 'USA';
+            if (articleTopics.uk.includes(topic)) return 'UK';
+            if (articleTopics.japan.includes(topic)) return 'Japan';
+            return 'General';
+        }
+
+        // Generate excerpt from content
+        function generateExcerpt(content) {
+            // Remove markdown formatting for clean excerpt
+            const cleanContent = content.replace(/[#*`>\-|]/g, '').replace(/\n+/g, ' ');
+            const sentences = cleanContent.split('. ');
+            return sentences.slice(0, 2).join('. ') + (sentences.length > 2 ? '...' : '');
+        }
+
+        // Extract title from content
+        function extractTitle(content) {
+            const lines = content.split('\n');
+            for (const line of lines) {
+                if (line.trim() && (line.startsWith('#') || !line.startsWith('*') && !line.startsWith('-'))) {
+                    return line.replace(/^#+\s*/, '').trim();
+                }
+            }
+            return "Untitled Article";
+        }
+
+        // Generate an enhanced offline article with specific content and formatting
+        function generateEnhancedOfflineArticle(topic) {
+            const now = new Date();
+            
+            // Find template for this topic
+            const template = articleTemplates[topic];
+            
+            // If no specific template found, use a generic one
+            if (!template) {
+                const content = `# ${topic}
+
+## Introduction
+
+This article explores the fascinating topic of **${topic}**, examining its historical context, current relevance, and future implications in our rapidly changing world.
+
+## Historical Background
+
+The origins of ${topic} can be traced back through centuries of development and evolution. Understanding this historical context provides essential insights into its contemporary significance and future trajectory.
+
+### Key Historical Milestones
+
+* Ancient foundations and early developments
+* Medieval transformations and adaptations
+* Modern innovations and breakthroughs
+* Contemporary advancements and future prospects
+
+## Contemporary Relevance
+
+In today's global landscape, ${topic} continues to play a *crucial role* in shaping economic, social, and cultural dynamics. Recent developments have highlighted both challenges and opportunities in this domain.
+
+> "Understanding ${topic} requires a multidisciplinary approach that considers historical context alongside contemporary developments and future projections." - Expert Analysis
+
+## Key Considerations
+
+Several important factors deserve attention when examining ${topic}:
+
+1. The impact on local communities and global systems
+2. Environmental and sustainability considerations
+3. Technological innovations driving change
+4. Cultural preservation and adaptation
+
+## Future Outlook
+
+As we look toward the future, ${topic} presents both **exciting possibilities** and *significant challenges*. Continued research, innovation, and international cooperation will be essential for maximizing benefits while addressing potential concerns.
+
+## Conclusion
+
+ ${topic} represents an important area of study with far-reaching implications for our collective future. By understanding its complexities and embracing its potential, we can work toward more sustainable and equitable outcomes for all stakeholders involved.
+
+---
+
+*Article generated on ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}*`;
+
+                return {
+                    id: Date.now(),
+                    title: topic,
+                    content: content,
+                    date: now.toLocaleDateString(),
+                    time: now.toLocaleTimeString(),
+                    isOffline: true
+                };
+            }
+            
+            // Generate article content based on template with rich formatting
+            const content = `# ${topic}
+
+## Introduction
+
+ ${template.intro}
+
+## Key Aspects
+
+ ${template.points.map(point => `* **${point}**`).join('\n')}
+
+## Detailed Analysis
+
+The examination of ${topic} reveals *complex interconnections* with various aspects of society, culture, and global systems. Recent studies and expert analyses have highlighted several important trends and patterns worth considering.
+
+### Major Developments
+
+1. **Historical Evolution**: Tracing the development from ancient times to modern day
+2. **Contemporary Impact**: Understanding current relevance and influence
+3. **Future Prospects**: Exploring potential developments and opportunities
+
+> "Understanding ${topic} requires a multidisciplinary approach that considers historical context alongside contemporary developments and future projections." - Expert Analysis
+
+## Conclusion
+
+ ${template.conclusion} As research continues and new discoveries emerge, our understanding of this subject will undoubtedly deepen, revealing new opportunities and challenges that will shape future developments in this field.
+
+---
+
+*Article generated on ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}*`;
+
+            return {
+                id: Date.now(),
+                title: topic,
+                content: content,
+                date: now.toLocaleDateString(),
+                time: now.toLocaleTimeString(),
+                isOffline: true
+            };
+        }
+
+        // Render articles to the DOM
+        function renderArticles() {
+            if (articles.length === 0) {
+                articlesContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            articlesContainer.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            articlesContainer.innerHTML = articles.map(article => `
+                <div class="article-card-original" data-article-id="${article.id}">
+                    <div class="article-header">
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-meta-original">
+                            <span><i class="far fa-calendar me-1"></i>${article.date}</span>
+                            <span><i class="far fa-clock me-1"></i>${article.time}</span>
+                            ${article.isOffline ? '<span><i class="fas fa-wifi-slash me-1"></i>Offline</span>' : '<span><i class="fas fa-wifi me-1"></i>Online</span>'}
+                        </div>
+                        <button class="fullscreen-btn" onclick="openFullscreen(${JSON.stringify(article).replace(/"/g, '&quot;')})">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="article-content-original">
+                        ${article.formattedContent || formatMarkdown(article.content)}
+                    </div>
+                    <div class="article-footer">
+                        <span><i class="fas fa-robot me-2"></i>AI Generated</span>
+                        <button class="btn btn-sm btn-outline-light" onclick="shareArticle(${article.id})">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-add touch event handling to new article cards
+            addTouchHandling();
+        }
+
+        // Render articles in different sections with enhanced formatting
+        function renderSectionArticles() {
+            // Featured Articles - First 3 articles
+            const featuredArticles = articles.slice(0, 3);
+            featuredArticlesGrid.innerHTML = featuredArticles.map(article => `
+                <div class="featured-article-card" onclick="openArticle(${article.id})">
+                    <img src="https://picsum.photos/seed/${article.id}/400/220.jpg" alt="${article.title}" class="featured-article-img">
+                    <div class="featured-article-content">
+                        <span class="article-category-tag">
+                            <i class="fas fa-star me-1"></i>${article.category || 'Featured'}
+                        </span>
+                        <h3 class="featured-article-title">${article.title}</h3>
+                        <p class="featured-article-excerpt">${article.excerpt || generateExcerpt(article.content)}</p>
+                        <div class="featured-article-meta">
+                            <span><i class="far fa-calendar me-1"></i>${article.date}</span>
+                            <span><i class="far fa-clock me-1"></i>${article.time}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Latest Articles - Next 6 articles
+            const latestArticles = articles.slice(3, 9);
+            latestArticlesGrid.innerHTML = latestArticles.map(article => `
+                <div class="latest-article-card" onclick="openArticle(${article.id})">
+                    <div class="latest-article-img-container">
+                        <img src="https://picsum.photos/seed/${article.id}/400/200.jpg" alt="${article.title}" class="latest-article-img">
+                        <span class="latest-article-date">
+                            <i class="far fa-calendar me-1"></i>${article.date}
+                        </span>
+                        <div class="latest-article-overlay">
+                            <button class="read-latest-btn">
+                                <i class="fas fa-book-open me-2"></i>Read Article
+                            </button>
+                        </div>
+                    </div>
+                    <div class="latest-article-content">
+                        <div class="latest-article-category">
+                            <i class="fas fa-clock me-1"></i>${article.category || 'Latest'}
+                        </div>
+                        <h3 class="latest-article-title">${article.title}</h3>
+                        <p class="latest-article-excerpt">${article.excerpt || generateExcerpt(article.content)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Trending Articles - Next 6 articles
+            const trendingArticles = articles.slice(9, 15);
+            trendingArticlesGrid.innerHTML = trendingArticles.map(article => `
+                <div class="trending-article-card" onclick="openArticle(${article.id})">
+                    <div class="trending-badge">
+                        <i class="fas fa-fire"></i>Trending
+                    </div>
+                    <img src="https://picsum.photos/seed/${article.id}/400/280.jpg" alt="${article.title}" class="trending-article-img">
+                    <div class="trending-article-overlay">
+                        <div class="trending-article-category">
+                            <i class="fas fa-chart-line me-1"></i>${article.category || 'Trending'}
+                        </div>
+                        <h3 class="trending-article-title">${article.title}</h3>
+                        <div class="trending-article-meta">
+                            <span><i class="far fa-calendar me-1"></i>${article.date}</span>
+                            <span><i class="fas fa-eye me-1"></i>1.2k views</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Categories - Show unique categories with counts and icons
+            const categories = {};
+            articles.forEach(article => {
+                const category = article.category || 'General';
+                categories[category] = (categories[category] || 0) + 1;
+            });
+
+            const categoryIcons = {
+                'India': 'fas fa-om',
+                'USA': 'fas fa-flag-usa',
+                'UK': 'fas fa-crown',
+                'Japan': 'fas fa-torii-gate',
+                'General': 'fas fa-globe'
+            };
+
+            categoriesGrid.innerHTML = Object.entries(categories).map(([category, count]) => `
+                <div class="category-card" onclick="filterByCategory('${category}')">
+                    <img src="https://picsum.photos/seed/${category}/300/200.jpg" alt="${category}" class="category-bg">
+                    <div class="category-content">
+                        <div class="category-icon">
+                            <i class="${categoryIcons[category] || 'fas fa-folder'}"></i>
+                        </div>
+                        <h3 class="category-name">${category}</h3>
+                        <p class="category-count">
+                            <span>${count}</span> Articles
+                        </p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add touch event handling to new cards
+            addTouchHandling();
+        }
+
+        // Open article from section
+        function openArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (article) {
+                openFullscreen(article);
+            }
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            // Scroll to main articles section and filter
+            document.getElementById('articlesContainer').scrollIntoView({ behavior: 'smooth' });
+            
+            // Highlight articles of this category
+            const articleCards = document.querySelectorAll('.article-card-original');
+            articleCards.forEach(card => {
+                const articleId = parseInt(card.dataset.articleId);
+                const article = articles.find(a => a.id === articleId);
+                if (article && (article.category === category || (category === 'General' && !article.category))) {
+                    card.classList.add('article-highlight');
+                    setTimeout(() => {
+                        card.classList.remove('article-highlight');
+                    }, 3000);
+                }
+            });
+            
+            showNotification('Category Filter', `Showing ${category} articles`);
+        }
+
+        // Enhanced markdown to HTML formatter with better formatting support
+        function formatMarkdown(markdown) {
+            let html = markdown;
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // Bold text
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // Italic text
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            
+            // Code blocks
+            html = html.replace(/```(.*?)```/gs, '<pre><code>$1</code></pre>');
+            
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Lists
+            html = html.replace(/^\* (.+)$/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            // Numbered lists
+            html = html.replace(/^\d+\. (.+)$/gim, '<li>$1</li>');
+            
+            // Blockquotes
+            html = html.replace(/^> (.+)$/gim, '<blockquote>$1</blockquote>');
+            
+            // Line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+            
+            // Horizontal rules
+            html = html.replace(/---/g, '<hr>');
+            
+            // Clean up extra tags
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<blockquote>)/g, '$1');
+            html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<pre>)/g, '$1');
+            html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+            
+            return html;
+        }
+
+        // Open article in fullscreen
+        function openFullscreen(article) {
+            fullscreenArticleContent.innerHTML = article.formattedContent || formatMarkdown(article.content);
+            fullscreenModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Update URL with article ID for sharing
+            const url = new URL(window.location);
+            url.searchParams.set('article', article.id);
+            window.history.pushState({}, '', url);
+        }
+
+        // Close fullscreen
+        function closeFullscreen() {
+            fullscreenModal.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // Remove article ID from URL
+            const url = new URL(window.location);
+            url.searchParams.delete('article');
+            window.history.pushState({}, '', url);
+        }
+
+        // Share article
+        function shareArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (article) {
+                // Create shareable URL
+                const url = new URL(window.location);
+                url.searchParams.set('article', id);
+                const shareUrl = url.toString();
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: article.title,
+                        text: article.content.substring(0, 100) + '...',
+                        url: shareUrl
+                    }).catch(err => console.log('Error sharing:', err));
+                } else {
+                    // Fallback - copy to clipboard
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        showNotification('Link Copied', 'Article link copied to clipboard.');
+                    });
+                }
+            }
+        }
+
+        // Show notification
+        function showNotification(title, message) {
+            const notificationTitle = notification.querySelector('.notification-title');
+            const notificationMessage = notification.querySelector('.notification-message');
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notification.classList.add('show');
+            
+            // Set notification to show for 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Start countdown to next article generation
+        function startCountdown() {
+            // Clear existing countdown
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Random interval between 1-2 hours (in milliseconds)
+            const intervalMs = 60 * 60 * 1000 + Math.random() * 60 * 60 * 1000;
+            let remainingTime = intervalMs;
+            
+            countdownInterval = setInterval(() => {
+                remainingTime -= 1000;
+                
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.textContent = 'Generating...';
+                    generateArticles();
+                    return;
+                }
+                
+                const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                
+                countdownElement.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Schedule next article generation
+        function scheduleNextArticleGeneration() {
+            // Clear existing interval
+            if (articleGenerationInterval) {
+                clearInterval(articleGenerationInterval);
+            }
+            
+            // Random interval between 1-2 hours (in milliseconds)
+            const intervalMs = 60 * 60 * 1000 + Math.random() * 60 * 60 * 1000;
+            
+            articleGenerationInterval = setInterval(() => {
+                generateArticles();
+                // Reschedule with a new random interval
+                scheduleNextArticleGeneration();
+            }, intervalMs);
+        }
+
+        // Close fullscreen on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && fullscreenModal.classList.contains('show')) {
+                closeFullscreen();
+            }
+        });
+
+        // Close fullscreen on background click
+        fullscreenModal.addEventListener('click', function(e) {
+            if (e.target === fullscreenModal) {
+                closeFullscreen();
+            }
+        });
+
+        // Handle window resize for responsive adjustments
+        window.addEventListener('resize', function() {
+            // Adjust fullscreen modal content on resize
+            if (fullscreenModal.classList.contains('show')) {
+                // No specific action needed as CSS handles responsive sizing
+            }
+        });
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
